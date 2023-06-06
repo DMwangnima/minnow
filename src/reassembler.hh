@@ -3,6 +3,25 @@
 #include "byte_stream.hh"
 
 #include <string>
+#include <array>
+
+class StreamBuffer
+{
+  private:
+    std::vector<char> buffer_ = {};
+    std::vector<bool> flag_ = {};
+    uint64_t capacity_ = 100;
+    uint64_t start_ = 0, end_ = 0;
+    uint64_t inspect_start_ = 0;
+    uint64_t pending_ = 0;
+    bool is_initialized_ = false;
+  public:
+    std::string pop( uint64_t max_length);
+    void push(uint64_t start_ind, std::string data, uint64_t max_length);
+    uint64_t bytes_pending() const;
+    void initialize(uint64_t capacity);
+    bool is_initialized();
+};
 
 class Reassembler
 {
@@ -31,4 +50,7 @@ public:
 
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
+private:
+  StreamBuffer buf_ {};
+  bool ready_close_ = false;
 };
